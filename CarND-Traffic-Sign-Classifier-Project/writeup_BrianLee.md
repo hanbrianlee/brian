@@ -25,7 +25,7 @@ The goals / steps of this project are the following:
 [image4]: ./writeup_images/image4.jpg "web2"
 [image5]: ./writeup_images/image5.jpg "web3"
 [image6]: ./writeup_images/image6.jpg "web4"
-[image6]: ./writeup_images/image7.jpg "web5"
+[image7]: ./writeup_images/image7.jpg "web5"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
