@@ -78,7 +78,7 @@ Still not being able to meet the minimum requirements, I tweaked some of hyperpa
 In summary, the final pre-processing was done in the order of grayscaling, augmenting, and finally normalizing.
 
 
-####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
+#### 2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
 I developed my model architecture based on LeNet. I increased the filter depth in both of my convolution layers as it approved my accuracy by about 1%.
 
@@ -102,11 +102,11 @@ My final model consisted of the following layers:
 
 
 
-####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
+#### 3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
 For the optimizer, I just went with the Adam optimizer which seems to be the popular choice. Unfortunately I did not have time to play around with different optimizers. As for learning rate, I kept 0.001 which was the value provided as an example for the LeNet exercise. As for batch size, I tried using 50, 86, 128, and it seemd like 50 was providing me the best result when the data were not augmented. However, after augmenting data, the choice 50 and 128 did not make much of a difference. I just went with 128 as it processed a bit faster. The accuracy constantly improved after every epoch except for one epoch where it dipped a little bit so it was a good indication that my model is not being overfitted. As for number of epochs, I was running this model on surface pro 1 model, which has a sub-par processor at best, so in order to reduce the time it takes to train, I just went with 10. I believe my model can reach higher percentages perhaps 98.5% on validation accuracy if I were to jack up the epochs to 50.
 
-####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
+#### 4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 As described in the previous sections, finding the best solution involved running the models many many times while trying different pre-processing techniques, tweaking hyperparameters, and changing depth of the LeNet convolution layers. The reason I went with the LeNet is because its code base was already provided and it required only simple tweaking. For other more advanced architectures, I did have a read on others codes as well as papers, but it seemed like, while they do provide better accuracy, none did the justice as much as "more augmented data" did. I took the coursera machine learning course and from there I learned that the easiest solution to solving accuracy problems is really "more data". And it seemed to be the case for this project as well. I was only able to achieve ~4% (biggest improvement) by going through data augmentation. I believe involving a more complicated architecture that involves some feed-forwards as well could improve the accuracy but only to a magnitude of about 1%.
 
@@ -115,23 +115,6 @@ My final model results were:
 * validation set accuracy of ? 97.4%
 * test set accuracy of ? 95%
 
-If an iterative approach was chosen:
-* What was the first architecture that was tried and why was it chosen? 
-LeNet
-
-* What were some problems with the initial architecture? 
-Accuracy was not enough
-
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting. 
-I had to increase the depth of the filters in the convolution layers.
-
-* Which parameters were tuned? How were they adjusted and why? 
-Batch size was increased to 128 from 50, in order to speed up the learning time.
-
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model? 
-It seemed that a proper dropout layer with a well chosen probability rate does improve the accuracy with a magnitude of about 1%. I might try this 
-
-If a well known architecture was chosen:
 * What architecture was chosen? 
 LeNet
 
@@ -143,9 +126,9 @@ With 95% accuracy on the test set, it is not be sufficient for an autonomous dri
 
  
 
-###Test a Model on New Images
+### Test a Model on New Images
 
-####1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
+#### 1. Choose five German traffic signs found on the web and provide them in the report. For each image, discuss what quality or qualities might be difficult to classify.
 
 Here are five German traffic signs that I found on the web:
 
@@ -154,7 +137,7 @@ Here are five German traffic signs that I found on the web:
 
 The first image might be difficult to classify because ...
 
-####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
+#### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
 Here are the results of the prediction:
 
@@ -169,7 +152,7 @@ Here are the results of the prediction:
 
 The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
 
-####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
+#### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
 The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
 
@@ -187,7 +170,7 @@ For the first image, the model is relatively sure that this is a stop sign (prob
 For the second image ... 
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
-####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
+#### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
 
 I will try this optional exercise later after finishing all the projects for term1. I was already delayed on this project for about a month due to increase in workload at work.
 
