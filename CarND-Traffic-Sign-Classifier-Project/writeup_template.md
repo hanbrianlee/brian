@@ -1,8 +1,8 @@
-#**Traffic Sign Recognition** 
+# **Traffic Sign Recognition** 
 
-##Writeup Template
+## Writeup Template
 
-###You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
+### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
 
 ---
 
@@ -21,8 +21,8 @@ The goals / steps of this project are the following:
 
 [image1]: ./writeup_images/image1.png "histogram"
 [image2]: ./writeup_images/image2.png "example image"
-[image3]: ./writeup_images/image3.png "histogram"
-[image4]: ./writeup_images/image4.png "histogram"
+[image3]: ./writeup_images/image3.png "before grayscaling"
+[image4]: ./writeup_images/image4.png "after preprocessing"
 [image5]: ./writeup_images/image5.png "histogram"
 [image6]: ./writeup_images/image6.png "histogram"
 
@@ -30,16 +30,16 @@ The goals / steps of this project are the following:
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
 
 ---
-###Writeup / README
+### Writeup / README
 
-####1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
+#### 1. Provide a Writeup / README that includes all the rubric points and how you addressed each one. You can submit your writeup as markdown or pdf. You can use this template as a guide for writing the report. The submission includes the project code.
 
 You're reading it! and here is a link to my Traffic_sign_classifier
 (https://github.com/udacity/CarND-Traffic-Sign-Classifier-Project/blob/master/Traffic_Sign_Classifier.ipynb)
 
-###Data Set Summary & Exploration
+### Data Set Summary & Exploration
 
-####1. Provide a basic summary of the data set. In the code, the analysis should be done using python, numpy and/or pandas methods rather than hardcoding results manually.
+#### 1. Provide a basic summary of the data set. In the code, the analysis should be done using python, numpy and/or pandas methods rather than hardcoding results manually.
 
 I used python native command .shape for arrays to get the shape of one of the images. As for unique classes, I used numpy concatenate to put all the y_train, t_valid, y_test into one array and then used np.unique commands followed by len command to find the number of unique classes.
 
@@ -49,51 +49,56 @@ I used python native command .shape for arrays to get the shape of one of the im
 * The shape of a traffic sign image is ? (32, 32, 3)
 * The number of unique classes/labels in the data set is ? 43
 
-####2. Include an exploratory visualization of the dataset.
+#### 2. Include an exploratory visualization of the dataset.
 
-Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
+Here is an exploratory visualization of the data set.
+To start off, I plotted a histrogram of y_train to see what the distribution of 43 unique classes are in terms of examples. This is important to see because if the data are skewed (i.e. for some classes there are tons of examples but for other classes scarce), then the CNN will learn&pick out more features from those that are more abundant while trying to reduce the overall losses when optimization&gradient descent is done. In this case, as shown on the histogram below, there are way more examples of classes 1(speed 30) and 2(speed 50) compared to class 19(dangerous curve to the left)
 
 ![alt text][image1]
 
-###Design and Test a Model Architecture
-
-####1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
-
-As a first step, I decided to convert the images to grayscale because ...
-
-Here is an example of a traffic sign image before and after grayscaling.
+Below is an example image of index 16758 (just a number I chose) which I kept running every time my code is run to visually check if my preprocessing does actually well and not harm the data. The X_train is shuffled every time the entire code is run, so that the index 16758 will pick out a different image every time. 
 
 ![alt text][image2]
 
-As a last step, I normalized the image data because ...
+### Design and Test a Model Architecture
 
-I decided to generate additional data because ... 
+#### 1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
-To add more data to the the data set, I used the following techniques because ... 
+For pre-processing, I played around with a couple of methods. On my very first try, a simple grayscale (i.e. np.sum(X_train/3,axis=3,keepdims=True)) and simple normalization (subtracting by 128 and dividing by 128) were the only pre-processings I applied. Surprisingly, this provided validation accuracy of 91%. Trying non-gray-scaled images (with 3 channels) provided worse results so I stuck with 1 channel images. In order to go above the minimum 93% requirement, I had to try other methods. 
 
-Here is an example of an original image and an augmented image:
+First of all, I used the cv2.cvtColor command (Y = 0.299 R + 0.587 G + 0.114 B instead of simple numpy average scheme presented above) to change to grayscale; but this method I believe had almost no effect on the accuracy. The improvement, if any, was so miniscule. 
 
-![alt text][image3]
+Next, I tried different normalizations, such as changing the ranges or using zscale. I settled on using -0.5 to 0.5 range because it was the simplest and also the random initilization done via tf.truncatednormal method seems to output value ranges that are quite small (smaller than -0.5 to 0.5 range). I just wanted my image values and the weights to be on a somewhat similar range so that excessive loss during float computations do not harm my learning model. 
 
-The difference between the original data set and the augmented data set is the following ... 
+However, changing normalization values seemed to provide only miniscule benefits, if it all, again. So I went on to try using cv2.equalizeHist to improve some of the images that were so dark that nothing could be made out of them. While this method was able to salvage a lot of the dark photos, for some of the images, the results weren't that satisfactory; some images were over-adjusted and some of the good images were excessively brightened in some areas that numbers such as 100 or 50 for speed limits were being effaced. Hence, in looking for a better method, I discovered this CLAHE method on one of the cv2 documentation websites and saw that some of their sample results were very promising. CLAHE helped the images achieve better contrast and avoid over contrast adjustment (thus avoiding over-brightening effects). With this I was satisfied with how the images were adjusted and the accuracy of my learning model improved by about 2%, resulting in validation accuracy of around 93~94%. However, when run on the test set, it achieved 93% once but most of the time was sitting at around 92%.
+
+Still not being able to meet the minimum requirements, I tweaked some of hyperparameters and model structure, which will be described in the sections below. In the end, I realized that no matter how much effort I put into finetuning the hyperparameters and grayscaling/normalization/image adjustments, I could not get significant improvement unless the skewed data problem was fixed and more data were available. So I went onto utilize keras module to generate more data that are rotated, zoomed, sheared, and shifted. Horizontal flips and and vertical flips were not applied as these won't happen in real life anyway. I generated more augmented data so that X_train will have equal number (3000) of images for each unique class. I tried 1000 at first, but it only provided 1~2% improvement on validation accuracy so I went on to increase the amount.
+
+In summary, the final pre-processing was done in the order of grayscaling, augmenting, and finally normalizing.
 
 
 ####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
+
+I developed my model architecture based on LeNet. I increased the filter depth in both of my convolution layers as it approved my accuracy by about 1%.
 
 My final model consisted of the following layers:
 
 | Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| Input         		| 32x32x3 RGB image   							| 
-| Convolution 3x3     	| 1x1 stride, same padding, outputs 32x32x64 	|
+| Input         		| 32x32x1 RGB image   							| 
+| Convolution 5x5     	| 1x1 stride, valid padding, depth 12 outputs 28x28x12 	|
 | RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
-|						|												|
- 
+| Max pooling	      	| 2x2 stride,  outputs 14x14x12 				|
+| Convolution 5x5     	| 1x1 stride, valid padding, depth 32 outputs 10x10x32 	|
+| RELU					|												|
+| Max pooling	      	| 2x2 stride,  outputs 5x5x32 				|
+| Flatten	      | outputs 800      									|
+| Fully connected		| outputs 120        									|
+| RELU					|												|
+| Fully connected		| outputs 84        									|
+| RELU					|												|
+| Fully connected		| outputs 43        									|
+
 
 
 ####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
@@ -103,9 +108,9 @@ To train the model, I used an ....
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
+* training set accuracy of ? 99.1%
+* validation set accuracy of ? 97.4%
+* test set accuracy of ? 95%
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
@@ -166,4 +171,5 @@ For the second image ...
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 ####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
 
+I will try this optional exercise later after finishing all the projects for term1. I was already delayed on this project for about a month due to increase in workload at work.
 
