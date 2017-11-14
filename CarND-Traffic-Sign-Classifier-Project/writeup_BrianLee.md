@@ -26,6 +26,7 @@ The goals / steps of this project are the following:
 [image5]: ./writeup_images/image5.jpg "web3"
 [image6]: ./writeup_images/image6.jpg "web4"
 [image7]: ./writeup_images/image7.jpg "web5"
+[image8]: ./writeup_images/image8.png "sampleResult"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -135,39 +136,39 @@ Here are five German traffic signs that I found on the web:
 ![alt text][image3] ![alt text][image4] ![alt text][image5] 
 ![alt text][image6] ![alt text][image7]
 
-The first image might be difficult to classify because ...
+The first image might be difficult to classify because it is a relatively small sign compared to the whole frame and it is shifted a lot to the left. Unless there are lots of images provided in the training set as an example of this setting for this class, the model will likely misclassify this.
+
+The second image should be classifiable since its zoom and the way it's facing the camera is pretty typical of the sample images in the training set.
+
+The third image would be very difficult to classify because it is very small and shifted to the left.
+
+The fourth one should be classifiable but there are some background noises which might hinder correct classification
+
+The fifth one's sign has way too much background noises located below the sign after pre-processing that it will likely not be classified correctly.
 
 #### 2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
 Here are the results of the prediction:
+![alt text][image8]
 
-| Image			        |     Prediction	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| Stop Sign      		| Stop sign   									| 
-| U-turn     			| U-turn 										|
-| Yield					| Yield											|
-| 100 km/h	      		| Bumpy Road					 				|
-| Slippery Road			| Slippery Road      							|
+The accuracy was a disappointing 20%. But these images had a lot of background noises that even after pre-processing, streaks of high intensity pixels were present aside from the sign's details. The test set accuracy was a satisfactory 95% and this 20% result against samples were definitely not satisfactory. More work will have to be put in later into pre-processing to remove background noises or perhaps utilizing hough transforms in combination to better extract features would help.
 
-
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
 
 #### 3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
-The code for making predictions on my final model is located in the 11th cell of the Ipython notebook.
+The code for computing top 5 softmax probabilities is located at the very bottom right before the optional exercise. The results are as follows, and my model makes an astoundingly confident assessment of each image, as evidently shown by the first choice's probability being significantly greater than the others (in fact, the other 4 for each image are so small that they are shown as 0.). The exact top 5 classes they predict seem quite questionable. I would have to investigate further why the 2nd~4th predictions are all identically 0,1,2 but it might have to do with the fact that speed signs were the most common out of all the training sets, and the CNN naturally applied weights/biases corresponding to features extracted from the speed signs, and forward propagating the images result in predictions skewed towards speed signs. Any feedback on what could be happening would be appreciated.
 
-For the first image, the model is relatively sure that this is a stop sign (probability of 0.6), and the image does contain a stop sign. The top five soft max probabilities were
-
-| Probability         	|     Prediction	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| .60         			| Stop sign   									| 
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
-
-
-For the second image ... 
+Prediction [False  True False False False]
+Accuracy 0.20000000298023224
+TOP 5 TopKV2(values=array([[ 1.,  0.,  0.,  0.,  0.],
+       [ 1.,  0.,  0.,  0.,  0.],
+       [ 1.,  0.,  0.,  0.,  0.],
+       [ 1.,  0.,  0.,  0.,  0.],
+       [ 1.,  0.,  0.,  0.,  0.]], dtype=float32), indices=array([[23,  0,  1,  2,  3],
+       [12,  0,  1,  2,  3],
+       [23,  0,  1,  2,  3],
+       [ 3,  0,  1,  2,  4],
+       [23,  0,  1,  2,  3]]))
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 #### 1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
